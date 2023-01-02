@@ -63,28 +63,44 @@ void Delete(int n)
     temp->next=temp2->next;//(n+1)th Node
     free(temp2);
 }
+void *Reverse()
+{
+    struct Node *current,*next,*prev;
+    current=head;
+    prev=NULL;
+    while(current!=NULL)
+    {
+        next=current->next;
+        current->next=prev;
+        prev=current;
+        current=next;
+    }
+    head=prev;
+}
 int main()
 {
     head = NULL;//empty list
-    printf("How manu numbers?\n");
+    // printf("How manu numbers?\n");
     int n,i,x;
-    scanf("%d",&n);
-    for(i=0;i<n;i++)
-    {
-        printf("Enter the number \n");
-        scanf("%d",&x);
-        Add(x);
-    }
-    Print();
+    // scanf("%d",&n);
+    // for(i=0;i<n;i++)
+    // {
+    //     printf("Enter the number \n");
+    //     scanf("%d",&x);
+    //     Add(x);
+    // }
+    // Print();
     Insert(2,1);//at index 0 value 2
     Insert(3,2);//at index 1 value 3
     Insert(4,1);//at index 0 value 4
     Insert(5,2);//at index 1 value 5
     Print();
-    int d;
-    printf("Enter a postion you want to delete:");
-    scanf("%d",&d);
-    Delete(d);
+    // int d;
+    // printf("Enter a postion you want to delete:");
+    // scanf("%d",&d);
+    // Delete(d);
+    // Print();
+    Reverse();
     Print();
     return 0;
 }
