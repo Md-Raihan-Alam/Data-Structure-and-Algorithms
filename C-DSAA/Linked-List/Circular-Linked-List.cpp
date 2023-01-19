@@ -54,7 +54,7 @@ void insertAtEnd(int x)
 }
 void insertAtPos(int x,int pos)
 {
-    if(pos<1 || pos>sz)
+    if(pos<1 || (pos>sz && sz!=0))
     {
         printf("Invalid\n");
         return ;
@@ -191,26 +191,29 @@ void print()
 }
 int main()
 {
-    insertAtBegin(1);
-    insertAtEnd(5);
-    print();
-    insertAtBegin(2);
-    insertAtEnd(7);
-    print();
-    insertAtBegin(4);
-    insertAtEnd(3);
-    print();
-    insertAtPos(10,2);
-    print();
-    insertAtPos(11,4);
-    print();
-    deleteBeg();
-    print();
-    deleteEnd();
-    print();
-    deleteAtPos(3);
-    print();
-    reverseList();
+    // insertAtBegin(1);
+    // insertAtEnd(5);
+    // print();
+    // insertAtBegin(2);
+    // insertAtEnd(7);
+    // print();
+    // insertAtBegin(4);
+    // insertAtEnd(3);
+    // print();
+    // insertAtPos(10,2);
+    // print();
+    // insertAtPos(11,4);
+    // print();
+    // deleteBeg();
+    // print();
+    // deleteEnd();
+    // print();
+    // deleteAtPos(3);
+    // print();
+    // reverseList();
+    // print();
+    insertAtPos(5,1);
+    insertAtPos(5,1);
     print();
     return 0;
 }
