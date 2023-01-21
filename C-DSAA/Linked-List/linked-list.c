@@ -5,8 +5,10 @@ struct Node{
     int data;
     struct Node *next;
 };
-void Print(struct Node *ptr)
+struct Node *head=NULL;
+void Print()
 {
+    struct Node *ptr=head;
     while(ptr!=NULL)
     {
         printf("%d ",ptr->data);
@@ -14,62 +16,171 @@ void Print(struct Node *ptr)
     }
     printf("\n");
 }
-struct Node *insertAtFirst(struct Node *head,int data)
+void insertAtHead(int x)
 {
-    struct Node *ptr=(struct Node *)malloc(sizeof(struct Node));
-    ptr->next=head;
-    ptr->data=data;
-    return ptr;
+    struct Node *newNode=(struct Node *)malloc(sizeof(struct Node));
+    newNode->data=x;
+    if(head==NULL)
+    {
+        head=newNode;
+        newNode->next=NULL;
+        sz++;
+        return ;
+    }
+    newNode->next=head;
+    head=newNode;
+    sz++;
+    return ;
 }
-// void Delete(int n)
-// {
-//     n--;
-//     struct Node *temp=head;
-//     if(n==0)
-//     {
-//         head=temp->next;//head now point to second node
-//         free(temp);
-//         return ;
-//     }
-//     int i;
-//     for(i=0;i<n-1;i++)
-//         temp=temp->next;
-//     //temp point to (n-1)th Node
-//     struct Node *temp2=temp->next;//nth Node
-//     temp->next=temp2->next;//(n+1)th Node
-//     free(temp2);
-// }
-// void *Reverse()
-// {
-//     struct Node *current,*next,*prev;
-//     current=head;
-//     prev=NULL;
-//     while(current!=NULL)
-//     {
-//         next=current->next;
-//         current->next=prev;
-//         prev=current;
-//         current=next;
-//     }
-//     head=prev;
-// }
+void insertAtEnd(int x)
+{
+    struct Node *newNode=(struct Node *)malloc(sizeof(struct Node));
+    newNode->data=x;
+    struct Node *temp=head;
+    if(temp==NULL)
+    {
+        head=newNode;
+        newNode->next=NULL;
+        sz++;
+        return ;
+    }
+    while(temp->next!=NULL)
+    {
+        temp=temp->next;
+    }
+    temp->next=newNode;
+    newNode->next=NULL;
+    sz++;
+    return ;
+}
+void insertAfterGivenPosition(int x,int pos)
+{
+    struct Node *newNode=(struct Node *)malloc(sizeof(struct Node));
+    newNode->data=x;
+    struct Node *temp=head;
+    if(pos>sz || pos<1)
+    {
+        printf("Invalid\n");
+        return ;
+    }
+    int i=1;
+    while(i<pos)
+    {
+        temp=temp->next;
+        i++;
+    }
+    newNode->next=temp->next;
+    temp->next=newNode;
+    sz++;
+    return ;
+}
+void deleteBegin()
+{
+    if(head==NULL)
+    {
+        printf("Empty\n");
+        return ;
+    }
+    struct Node *temp=head;
+    head=head->next;
+    free(temp);
+    sz--;
+    return ;
+}
+void deleteEnd()
+{
+    if(head==NULL)
+    {
+        printf("Empty\n");
+        return ;
+    }
+    struct Node *temp=head;
+    struct Node *prev;
+    while(temp->next!=NULL)
+    {
+        prev=temp;
+        temp=temp->next;
+    }
+    if(temp==head)
+    {
+        head=NULL;
+        free(temp);
+        sz--;
+        return ;
+    }
+    prev->next=NULL;
+    free(temp);
+    sz--;
+    return ;
+}
+void deletePos(int pos)
+{
+    if(pos<1 || pos>sz || sz==0)
+    {
+        printf("Invalid\n");
+        return ;
+    }
+    if(pos==1)
+    {
+        deleteBegin();
+        return ;
+    }
+    if(pos==sz)
+    {
+        deleteEnd();
+        return ;
+    }
+    struct Node *nextNode;
+    int i=1;
+    struct Node *temp=head;
+    while(i<pos-1)
+    {
+        temp=temp->next;
+        i++;
+    }
+    nextNode=temp->next;
+    temp->next=nextNode->next;
+    free(nextNode);
+    sz--;
+    return ;
+}
+void reverse()
+{
+    struct Node *prev,*curr,*next;
+    prev=NULL;
+    curr=head;
+    next=head;
+    while(next!=NULL)
+    {
+        next=next->next;
+        curr->next=prev;
+        prev=curr;
+        curr=next;
+    }
+    head=prev;
+}
 int main()
 {
-    struct Node *head,*second,*third;
-    //allocate memory for nodes in the linked list in heap
-    head=(struct Node *)malloc(sizeof(struct Node));
-    second=(struct Node *)malloc(sizeof(struct Node));
-    third=(struct Node *)malloc(sizeof(struct Node));
-    //link first and second node
-    head->data=7;
-    head->next=second;
-    //llink second and third node
-    second->data=11;
-    second->next=third;
-    //terminate the list at third node
-    third->data=66;
-    third->next=NULL;
-    head=insertAtFirst(head,69);
-    Print(head);
+    insertAtHead(5);
+    insertAtHead(7);
+    insertAtHead(10);
+    Print();
+    insertAtEnd(11);
+    insertAtEnd(25);
+    Print();
+    insertAfterGivenPosition(12,2);
+    Print();
+    insertAfterGivenPosition(15,1);
+    Print();
+    deleteBegin();
+    Print();
+    deleteEnd();
+    Print();
+    deletePos(3);
+    Print();
+    reverse();
+    Print();
+    insertAfterGivenPosition(20,1);
+    Print();
     return 0;
 }
