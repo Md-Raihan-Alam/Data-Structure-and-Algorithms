@@ -1,102 +1,199 @@
+/* This program converts infix expression to postfix expression.
+ * This program assume that there are Five operators: (*, /, +, -,^) 
+	in infix expression and operands can be of single-digit only.
+ * This program will not work for fractional numbers.
+ * Further this program does not check whether infix expression is 
+ valid or not in terms of number of operators and operands.*/
+
 #include<stdio.h>
-#include<stdlib.h>
+#include<stdlib.h>      /* for exit() */
+#include<ctype.h>     /* for isdigit(char ) */
 #include<string.h>
-struct stack{
-    int size;
-    int top;
-    char *arr;
-};
-int isEmpty(struct stack *ptr)
+
+#define SIZE 100
+
+
+/* declared here as global variable because stack[]
+* is used by more than one fucntions */
+char stack[SIZE];
+int top = -1;
+
+/* define push operation */
+
+void push(char item)
 {
-    if(ptr->top==-1)
-    {
-        return 1;
-    }
-    return 0;
+	if(top >= SIZE-1)
+	{
+		printf("\nStack Overflow.");
+	}
+	else
+	{
+		top = top+1;
+		stack[top] = item;
+	}
 }
-int isFull(struct stack *ptr)
+
+/* define pop operation */
+char pop()
 {
-    if(ptr->top==ptr->size-1)
-    {
-        return 1;
-    }
-    return 0;
+	char item ;
+
+	if(top <0)
+	{
+		printf("stack under flow: invalid infix expression");
+		getchar();
+		/* underflow may occur for invalid expression */
+		/* where ( and ) are not matched */
+		exit(1);
+	}
+	else
+	{
+		item = stack[top];
+		top = top-1;
+		return(item);
+	}
 }
-void push(struct stack *ptr,char val)
+
+/* define function that is used to determine whether any symbol is operator or not
+(that is symbol is operand)
+* this fucntion returns 1 if symbol is opreator else return 0 */
+
+int is_operator(char symbol)
 {
-    if(isFull(ptr))
-    {
-        printf("Size is full");
-    }else{
-    ptr->top++;
-    ptr->arr[ptr->top]=val;
-    }
+	if(symbol == '^' || symbol == '*' || symbol == '/' || symbol == '+' || symbol =='-')
+	{
+		return 1;
+	}
+	else
+	{
+	return 0;
+	}
 }
-char stackTop(struct stack *ptr){
-        return ptr->arr[ptr->top];
-}
-char pop(struct stack *ptr)
+
+/* define fucntion that is used to assign precendence to operator.
+* Here ^ denotes exponent operator.
+* In this fucntion we assume that higher integer value
+* means higher precendence */
+
+int precedence(char symbol)
 {
-    char data=ptr->arr[ptr->top];
-    ptr->top--;
-    return data;
+	if(symbol == '^')/* exponent operator, highest precedence*/
+	{
+		return(3);
+	}
+	else if(symbol == '*' || symbol == '/')
+	{
+		return(2);
+	}
+	else if(symbol == '+' || symbol == '-')          /* lowest precedence */
+	{
+		return(1);
+	}
+	else
+	{
+		return(0);
+	}
 }
-int precedence(char ch)
-{
-    if(ch=='*' || ch=='/')
-        return 3;
-    else if(ch=='+' || ch=='-')
-        return 2;
-    else
-        return 0;
+
+void InfixToPostfix(char infix_exp[], char postfix_exp[])
+{ 
+	int i, j;
+	char item;
+	char x;
+
+	push('(');                               /* push '(' onto stack */
+	strcat(infix_exp,")");                  /* add ')' to infix expression */
+
+	i=0;
+	j=0;
+	item=infix_exp[i];         /* initialize before loop*/
+
+	while(item != '\0')        /* run loop till end of infix expression */
+	{
+		if(item == '(')
+		{
+			push(item);
+		}
+		else if( isdigit(item) || isalpha(item))
+		{
+			postfix_exp[j] = item;              /* add operand symbol to postfix expr */
+			j++;
+		}
+		else if(is_operator(item) == 1)        /* means symbol is operator */
+		{
+			x=pop();
+			while(is_operator(x) == 1 && precedence(x)>= precedence(item))
+			{
+				postfix_exp[j] = x;                  /* so pop all higher precendence operator and */
+				j++;
+				x = pop();                       /* add them to postfix expresion */
+			}
+			push(x);
+			/* because just above while loop will terminate we have
+			oppped one extra item
+			for which condition fails and loop terminates, so that one*/
+
+			push(item);                 /* push current oprerator symbol onto stack */
+		}
+		else if(item == ')')         /* if current symbol is ')' then */
+		{
+			x = pop();                   /* pop and keep popping until */
+			while(x != '(')                /* '(' encounterd */
+			{
+				postfix_exp[j] = x;
+				j++;
+				x = pop();
+			}
+		}
+		else
+		{ /* if current symbol is neither operand not '(' nor ')' and nor
+			operator */
+			printf("\nInvalid infix Expression.\n");        /* the it is illegeal  symbol */
+			getchar();
+			exit(1);
+		}
+		i++;
+
+
+		item = infix_exp[i]; /* go to next symbol of infix expression */
+	} /* while loop ends here */
+	if(top>0)
+	{
+		printf("\nInvalid infix Expression.\n");        /* the it is illegeal  symbol */
+		getchar();
+		exit(1);
+	}
+	if(top>0)
+	{
+		printf("\nInvalid infix Expression.\n");        /* the it is illegeal  symbol */
+		getchar();
+		exit(1);
+	}
+
+
+	postfix_exp[j] = '\0'; /* add sentinel else puts() fucntion */
+	/* will print entire postfix[] array upto SIZE */
+
 }
-int isOperator(char ch)
-{
-    if(ch=='+' || ch=='-' || ch=='*' || ch=='/')
-        return 1;
-    else
-        return 0;
-}
-char *infixToPostFix(char *infix)
-{
-    struct stack *sp=(struct stack *) malloc(sizeof(struct stack));
-    sp->size=100;
-    sp->top=-1;
-    sp->arr=(char *)malloc(sp->size*sizeof(char));
-    char *postfix=(char *)malloc((strlen(infix)+1)*sizeof(char));
-    int i=0;//track infix traversal
-    int j=0;//track postfix addition
-    while(infix[i]!='\0')
-    {
-        if(!isOperator(infix[i]))
-        {
-            postfix[j]=infix[i];
-            j++;
-            i++;
-        }else{
-            if(precedence(infix[i])>precedence(stackTop(sp)))
-            {
-                push(sp,infix[i]);
-                i++;
-            }else{
-                postfix[j]=pop(sp);
-                j++;
-            }
-        }
-    }
-    while(!isEmpty(sp))
-    {
-        postfix[j]=pop(sp);
-        j++;
-    }
-    postfix[j]='\0';
-    return postfix;
-}
+
+/* main function begins */
 int main()
 {
-    // char * infix="a-b+t/6";
-    // char * infix="a-b";
-    char * infix="x-y/z-k*d";
-    printf("postfix is %s\n",infixToPostFix(infix));
-    return 0;
+	char infix[SIZE], postfix[SIZE];         /* declare infix string and postfix string */
+
+	/* why we asked the user to enter infix expression
+	* in parentheses ( )
+	* What changes are required in porgram to
+	* get rid of this restriction since it is not
+	* in algorithm
+	* */
+	printf("ASSUMPTION: The infix expression contains single letter variables and single digit constants only.\n");
+	printf("\nEnter Infix expression : ");
+	gets(infix);
+
+	InfixToPostfix(infix,postfix);                   /* call to convert */
+	printf("Postfix Expression: ");
+	puts(postfix);                     /* print postfix expression */
+
+	return 0;
 }
