@@ -1,0 +1,38 @@
+append(data):
+Create a new node with the given data.
+If the list is empty, set the head to the new node and return.
+Traverse the list to the last node.
+Set the next pointer of the last node to the new node.
+
+prepend(data):
+Create a new node with the given data.
+Set the next pointer of the new node to the current head.
+Set the head to the new node.
+
+insert(index, data):
+Create a new node with the given data.
+If the index is 0, set the next pointer of the new node to the current head and set the head to the new node.
+Traverse the list to the node before the index.
+Set the next pointer of the new node to the next pointer of the previous node.
+Set the next pointer of the previous node to the new node.
+
+remove(index):
+If the list is empty, return.
+If the index is 0, set the head to the next pointer of the current head and delete the original head.
+Traverse the list to the node before the index.
+Set the next pointer of the previous node to the node after the index.
+Delete the node at the index.
+
+reverse():
+Initialize three pointers: current, prev, and next.
+Set current to the head of the list and prev and next to nullptr.
+While current is not nullptr, do the following:
+Set next to the next pointer of current.
+Set the next pointer of current to prev.
+Set prev to current.
+Set current to next.
+Set the head of the list to prev.
+
+print():
+Traverse the list starting from the head.
+Print the data of each node in the list.

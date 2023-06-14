@@ -90,7 +90,7 @@ int evaluate_postfix(char* exp) {
 
 // main function to test the postfix expression evaluation
 int main() {
-    char exp[] = "23*54*+9-";
+    char exp[] = "11+96";
     printf("Postfix expression: %s\n", exp);
     int result = evaluate_postfix(exp);
     printf("Result: %d\n", result);

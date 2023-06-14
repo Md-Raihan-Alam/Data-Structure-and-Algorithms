@@ -1,120 +1,136 @@
-#include<bits/stdc++.h>
+#include<iostream>
 using namespace std;
 class Node{
     public:
-        int data;
-        Node *next;
-        Node *head=NULL;
-        int sz=0;
+    int data;
+    Node* next;
 };
-class LinkedList:public Node{
+class LinkedList{
+    private:
+    Node* head;
     public:
-        void Add(int x)
+    LinkedList(){
+        head=nullptr;
+    }
+    ~LinkedList(){
+        Node* current=head;
+        while(current!=nullptr)
         {
-            class Node *temp=new Node[sizeof(Node)];
-            temp->data=x;
-            temp->next=NULL;
-            if(head!=NULL)
-            {
-                temp->next=head;
-            }
-            head=temp;
-            sz++;
+            Node* next=current->next;
+            delete current;
+            current=next;
         }
-        void insert(int x,int n)
+    }
+    void append(int data)
+    {
+        Node* newNode=new Node();
+        newNode->data=data;
+        newNode->next=nullptr;
+        if(head==nullptr)
         {
-            if(n<1 || n>sz)
+            head=newNode;
+            return ;
+        }
+        Node* current=head;
+        while(current->next!=nullptr)
+        {
+            current=current->next;
+        }
+        current->next=newNode;
+    }
+    void prepend(int data)
+    {
+        Node* newNode=new Node();
+        newNode->data=data;
+        newNode->next=head;
+        head=newNode;
+    }
+    void insert(int index,int data)
+    {
+        Node* newNode=new Node();
+        newNode->data=data;
+        if(index==0)
+        {
+            newNode->next=head;
+            head=newNode;
+            return ;
+        }
+        Node* current=head;
+        for(int i=0;i<index-1;i++)
+        {
+            if(current==nullptr)
             {
-                cout<<"INVALID or list is empty"<<endl;
                 return ;
             }
-            class Node *temp=new Node[sizeof(Node)];
-            temp->data=x;
-            temp->next=NULL;
-            if(n==1)
+            current=current->next;
+        }
+        newNode->next=current->next;
+        current->next=newNode;
+    }
+    void remove(int index)
+    {
+        if(head==nullptr)
+        {
+            return ;
+        }
+        if(index==0)
+        {
+            Node* temp=head;
+            head=head->next;
+            delete temp;
+            return ;
+        }
+        Node* current=head;
+        for(int i=0;i<index-1;i++)
+        {
+            if(current==nullptr || current->next==nullptr)
             {
-                temp->next=head;
-                head=temp;
-                sz++;
                 return ;
             }
-            class Node *temp2=head;
-            while(n--)
-                temp2=temp2->next;
-            temp->next=temp2->next;
-            temp2->next=temp;
-            sz++;
+            current=current->next;
         }
-        void del(int n)
+        Node* temp=current->next;
+        current->next=temp->next;
+        delete temp;
+    }
+    void reverse()
+    {
+        Node* current=head;
+        Node* prev=nullptr;
+        Node* next=nullptr;
+        while(current!=nullptr)
         {
-            if(n<1 || n>sz)
-            {
-                cout<<"INVALID"<<endl;
-                return ;
-            }
-            class Node *temp=head;
-            if(n==1)
-            {
-                head=temp->next;
-                delete(temp);
-                sz--;
-                return ;
-            }
-            for(int i=1;i<=n;i++)
-                temp=temp->next;
-            class Node *temp2=temp->next;
-            temp->next=temp2->next;
-            delete(temp2);
-            sz--;
+            next=current->next;
+            current->next=prev;
+            prev=current;
+            current=next;
         }
-        void rev()
+        head=prev;
+    }
+    void print()
+    {
+        Node* current=head;
+        while(current!=nullptr)
         {
-            class Node *current,*next,*prev;
-            current=head;
-            prev=NULL;
-            while(current!=NULL)
-            {
-                next=current->next;
-                current->next=prev;
-                prev=current;
-                current=next;
-            }
-            head=prev;
+            cout<<current->data<<" ";
+            current=current->next;
         }
-        int length()
-        {
-            return sz;
-        }
-        void print()
-        {
-            if(sz==0)
-            {
-                cout<<"Empty"<<endl;
-                return ;
-            }
-            class Node *temp=head;
-            while(temp!=NULL)
-            {
-                cout<<temp->data<<" ";
-                temp=temp->next;
-            }
-            cout<<endl;
-        }
+        cout<<endl;
+    }
 };
-int main()
-{
-    LinkedList ls;
-    ls.Add(10);
-    ls.Add(20);
-    ls.Add(30);
-    ls.print();
-    cout<<ls.length()<<endl;
-    ls.insert(1,1);
-    ls.insert(2,2);
-    ls.print();
-    cout<<ls.length()<<endl;
-    ls.del(2);
-    ls.print();
-    cout<<ls.length()<<endl;
+int main() {
+    LinkedList list;
+    list.append(5);
+    list.append(10);
+    list.append(15);
+    list.print();
+    list.prepend(0);
+    list.insert(3, 7);
+    list.print();
+    list.remove(2);
+    list.print();
+    list.reverse();
+    list.print();
+    
     return 0;
 }
