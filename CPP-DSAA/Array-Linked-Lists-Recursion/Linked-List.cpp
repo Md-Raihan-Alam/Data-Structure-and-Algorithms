@@ -14,8 +14,6 @@ class LinkedList{
     public:
         LinkedList(){
             first=NULL;
-            second=NULL;
-            third=NULL;
         }
         void createFromArray(int A[],int n){
             int i;
@@ -138,7 +136,7 @@ class LinkedList{
             p->next=NULL;
             if(node==NULL)
             {
-                first=node;
+                first=p;
                 return ;
             }
             while(node->next!=NULL)
