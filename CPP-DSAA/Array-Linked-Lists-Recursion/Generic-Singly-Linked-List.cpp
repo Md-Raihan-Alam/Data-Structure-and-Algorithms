@@ -233,6 +233,124 @@ template<class DT2> class LinkedList{
             }
             first=q;
         }
+        void Concat(LinkedList<DT2> &otherList)
+        {
+            Node<DT2>* current=first;
+            if(!current)
+            {
+                first=otherList.first;
+            }else{
+                while(current->next!=NULL)
+                {
+                    current=current->next;
+                }
+                current->next=otherList.first;
+            }
+            otherList.first=NULL;
+        }
+        bool hasLoop()
+        {
+            Node<DT2>* p=first;
+            Node<DT2>* q=first;
+            while(p && q && q->next){
+                p=p->next;
+                q=q->next->next;
+                if(p==q)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        void Merge(LinkedList<DT2> &otherList)
+        {
+            Node<DT2>* p=first;
+            Node<DT2>* q=otherList.first;
+            Node<DT2>* last=NULL;
+            if(!p)
+            {
+                first=p;
+            }else if(!q)
+            {
+                return;
+            }else{
+                if(p->data<q->data)
+                {
+                    last=third=p;
+                    p=p->next;
+                    third->next=NULL;
+                }else{
+                    last=third=q;
+                    q=q->next;
+                    third->next=NULL;
+                }
+            }
+            while(p && q)
+            {
+                if(p->data<q->data)
+                {
+                    last->next=p;
+                    last=p;
+                    p=p->next;
+                    last->next=NULL;
+                }else{
+                    last->next=q;
+                    last=q;
+                    q=q->next;
+                    last->next=NULL;
+                }
+            }
+            if(p)
+            {
+                last->next=p;
+            }
+            if(q)
+            {
+                last->next=q;
+            }
+            otherList.first=NULL;
+        }
+        void InsertSorted(DT2 x)
+        {
+            Node<DT2>* node=new Node<DT2>;
+            node->data=x;
+            node->next=NULL;
+            if(first==NULL)
+            {
+                first=node;
+            }else{
+                Node<DT2>* p=first;
+                Node<DT2>* q=NULL;
+                while(p && p->data<x)
+                {
+                    q=p;
+                    p=p->next;
+                }
+                if(p==first)
+                {
+                    node->next=first;
+                    first=node;
+                }else{
+                    node->next=q->next;
+                    q->next=node;
+                }
+            }
+        }
+        void removeDuplicateds()
+        {
+            Node<DT2> *p=first;
+            while(p && p->next)
+            {
+                if(p->data==p->next->data)
+                {
+                    Node<DT2>* q=p->next;
+                    p->next=q->next;
+                    delete q;
+                }else{
+                    p=p->next;
+                }
+            }
+        }
 };
 int main()
 {
@@ -250,5 +368,6 @@ int main()
     L.Display();
     L.Reverse();
     L.Display();
+   
     return 0;
 }
