@@ -3,217 +3,124 @@
 struct Node{
     int data;
     struct Node *next;
-};
-int sz=0;
-struct Node *tail;
-// void insert(int x)
-// {
-//     struct Node* newNode=(struct Node*)malloc(sizeof(struct Node));
-//     newNode->data=x;
-//     if(head==NULL)
-//     {
-//         head=newNode;
-//         temp=newNode;
-//         return ;
-//     }
-//     temp->next=newNode;
-//     temp=newNode;
-//     temp->next=head;
-//     sz++;
-// }
-void insertAtBegin(int x)
+}*Head;
+void Create(int A[],int n)
 {
-    struct Node* newNode=(struct Node*)malloc(sizeof(struct Node));
-    newNode->data=x;
-    if(tail==NULL)
+    int i;
+    struct Node *t,*last;
+    Head=(struct Node*)malloc(sizeof(struct Node));
+    Head->data=A[0];
+    Head->next=Head;
+    last=Head;
+    for(i=1;i<n;i++)
     {
-        tail=newNode;
-        tail->next=newNode;
-        sz++;
-        return ;
+        t=(struct Node*)malloc(sizeof(struct Node));;
+        t->data=A[i];
+        t->next=last->next;
+        last->next=t;
+        last=t;
     }
-    newNode->next=tail->next;
-    tail->next=newNode;
-    sz++;
 }
-void insertAtEnd(int x)
-{
-    struct Node* newNode=(struct Node*)malloc(sizeof(struct Node));
-    newNode->data=x;
-    if(tail==NULL)
-    {
-        tail=newNode;
-        tail->next=newNode;
-        sz++;
-        return ;
-    }
-    newNode->next=tail->next;
-    tail->next=newNode;
-    tail=newNode;
-    sz++;
-}
-void insertAtPos(int x,int pos)
-{
-    if(pos<1 || (pos>sz && sz!=0))
-    {
-        printf("Invalid\n");
-        return ;
-    }
-    if(pos==1)
-    {
-        insertAtBegin(x);
-        return ;
-    }
-    if(pos==sz+1)
-    {
-        insertAtEnd(x);
-        return ;
-    }
-    struct Node* newNode=(struct Node*)malloc(sizeof(struct Node));
-    struct Node* temp;
-    int i=1;
-    newNode->data=x;
-    temp=tail->next;
-    while(i<pos-1)
-    {
-        temp=temp->next;
-        i++;
-    }
-    newNode->next=temp->next;
-    temp->next=newNode;
-    sz++;
-}
-void deleteBeg()
-{
-    struct Node* temp=tail->next;
-    if(tail==NULL)
-    {
-        printf("Invalid");
-        return ;
-    }
-    else if(temp->next==temp)
-    {
-        tail=NULL;
-        free(temp);
-        sz--;
-        return ;
-    }
-    tail->next=temp->next;
-    free(temp);
-    sz--;
-}
-void deleteEnd()
-{
-    if(tail==NULL)
-    {
-        printf("Invalid");
-        return ;
-    }
-    struct Node *current,*previous;
-    current=tail->next;
-    if(current->next==current)
-    {
-        tail=NULL;
-        free(current);
-        sz--;
-        return ;
-    }
-    while(current->next!=tail->next)
-    {
-        previous=current;
-        current=current->next;
-    }
-    previous->next=tail->next;
-    tail=previous;
-    free(current);
-    sz--;
-}
-void deleteAtPos(int pos)
-{
-    if(tail==NULL || pos<1 || pos>sz)
-    {
-        printf("Invalid");
-        return ;
-    }
-    if(pos==1)
-    {
-        deleteBeg();
-        return ;
-    }
-    if(pos==sz)
-    {
-        deleteEnd();
-        return ;
-    }
-    struct Node *current,*nextNode;
-    int i=1;
-    current=tail->next;
-    while(i<pos-1)
-    {
-        current=current->next;
-        i++;
-    }
-    nextNode=current->next;
-    current->next=nextNode->next;
-    free(nextNode);
-    sz--;
-}
-void reverseList()
-{
-    struct Node *current,*prev,*nextNode;
-    if(tail==NULL)
-    {
-        printf("Empty");
-        return ;
-    }
-    current=tail->next;
-    nextNode=current->next;
-    while(current!=tail)
-    {
-        prev=current;
-        current=nextNode;
-        nextNode=current->next;
-        current->next=prev;
-    }
-    nextNode->next=tail;
-    tail=nextNode;
-}
-void print()
-{
-    struct Node* temp=tail->next;
-    while(temp->next!=tail->next)
-    {
-        printf("%d ",temp->data);
-        temp=temp->next;
-    }
-    printf("%d ",temp->data);
+void Display(struct Node *h){
+    do{
+        printf("%d ",h->data);
+        h=h->next;
+    }while(h!=Head);
     printf("\n");
+}
+int Length(struct Node *p)
+{
+    int len=0;
+    do{
+        len++;
+        p=p->next;
+    }while(p!=Head);
+    return len;
+}
+void InsertAt(struct Node *p,int index,int x)
+{
+    struct Node *t;
+    int i;
+    if(index<0 || index>Length(Head))
+    {
+        printf("INVALID\n");
+        return ;
+    }
+    if(index==1)
+    {
+        t=(struct Node *)malloc(sizeof(struct Node));
+        t->data=x;
+        if(Head==NULL)
+        {
+            Head=t;
+            Head->next=Head;
+            return ;
+        }
+        while(p->next!=Head)
+            p=p->next;
+        p->next=t;
+        t->next=Head;
+        Head=t;
+    }else{
+        for(i=1;i<index;i++)
+            p=p->next;
+        t=(struct Node *)malloc(sizeof(struct Node));
+        t->data=x;
+        t->next=p->next;
+        p->next=t;
+    }
+}
+int Delete(struct Node *p,int index)
+{
+    struct Node *q;
+    int i,x;
+    if(index<0 || index>Length(Head))
+    {
+        printf("INVALID\n");
+        return -1;
+    }
+    if(index==1)
+    {
+        while(p->next!=Head)
+        {
+            p=p->next;
+        }
+        x=Head->data;
+        if(Head==p)
+        {
+            free(Head);
+            Head=NULL;
+        }else{
+            p->next=Head->next;
+            free(Head);
+            Head=p->next;
+        }
+    }else{
+        for(i=0;i<index-2;i++)
+            p=p->next;
+        q=p->next;
+        p->next=q->next;
+        x=q->data;
+        free(q);
+    }
+    return x;
 }
 int main()
 {
-    // insertAtBegin(1);
-    // insertAtEnd(5);
-    // print();
-    // insertAtBegin(2);
-    // insertAtEnd(7);
-    // print();
-    // insertAtBegin(4);
-    // insertAtEnd(3);
-    // print();
-    // insertAtPos(10,2);
-    // print();
-    // insertAtPos(11,4);
-    // print();
-    // deleteBeg();
-    // print();
-    // deleteEnd();
-    // print();
-    // deleteAtPos(3);
-    // print();
-    // reverseList();
-    // print();
-    insertAtPos(5,1);
-    insertAtPos(5,1);
-    print();
+    int A[]={3,5,1,2,5};
+    Create(A,5);
+    Display(Head);
+    InsertAt(Head,2,10);
+    Display(Head);
+    InsertAt(Head,6,13);
+    Display(Head);
+    InsertAt(Head,1,100);
+    Display(Head);
+    Delete(Head,1);
+    Display(Head);
+    Delete(Head,2);
+    Display(Head);
+    Delete(Head,6);
+    Display(Head);
     return 0;
 }
