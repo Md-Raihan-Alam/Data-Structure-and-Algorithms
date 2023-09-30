@@ -41,7 +41,7 @@ void InsertAt(struct Node *p,int index,int x)
 {
     struct Node *t;
     int i;
-    if(index<0 || index>Length(Head))
+    if(index<=0 || index>Length(Head))
     {
         printf("INVALID\n");
         return ;
@@ -74,7 +74,7 @@ int Delete(struct Node *p,int index)
 {
     struct Node *q;
     int i,x;
-    if(index<0 || index>Length(Head))
+    if(index<=0 || index>Length(Head))
     {
         printf("INVALID\n");
         return -1;
