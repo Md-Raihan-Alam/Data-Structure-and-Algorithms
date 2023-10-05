@@ -1,214 +1,143 @@
-// https://www.alphacodingskills.com/ds/notes/circular-doubly-linked-list-reverse-the-list.php#c1
-// https://www.sanfoundry.com/c-program-circular-doubly-linked-list/#:~:text=What%20is%20a%20Circular%20Doubly,sorting%20data%20is%20also%20possible.
-#include<stdio.h>
-#include<stdlib.h>
-struct Node
-{
-    struct Node* prev;
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    struct Node *prev;
     int data;
-    struct Node* next;
-}*head;
-int sz=0;
-void insertAtHead(int x)
-{
-    struct Node* newNode=(struct Node*)malloc(sizeof(struct Node));
-    newNode->data=x;
-    if(head==NULL)
-    {
-        newNode->next=newNode;
-        newNode->prev=newNode;
-        head=newNode;
-        sz++;
-        return ;
+    struct Node *next;
+} *first = NULL;
+
+void Create(int A[], int n) {
+    struct Node *t, *last;
+    int i;
+    first = (struct Node *)malloc(sizeof(struct Node));
+    first->data = A[0];
+    first->prev = first->next = first; // Make it circular
+    last = first;
+
+    for (i = 1; i < n; i++) {
+        t = (struct Node *)malloc(sizeof(struct Node));
+        t->data = A[i];
+        t->next = last->next;
+        t->prev = last;
+        last->next = t;
+        first->prev = t; // Update the previous of the first node
+        last = t;
     }
-    head->prev->next=newNode;
-    newNode->prev=head->prev;
-    newNode->next=head;
-    head->prev=newNode;
-    head=newNode;
-    sz++;
 }
-void insertAtEnd(int x)
-{
-    struct Node* newNode=(struct Node*)malloc(sizeof(struct Node));
-    newNode->data=x;
-    if(head==NULL)
-    {
-        newNode->next=newNode;
-        newNode->prev=newNode;
-        head=newNode;
-        sz++;
-        return ;
-    }
-    head->prev->next=newNode;
-    newNode->prev=head->prev;
-    newNode->next=head;
-    head->prev=newNode;
-    sz++;
+
+void Display(struct Node *p) {
+    struct Node *temp = p;
+    do {
+        printf("%d ", temp->data);
+        temp = temp->next;
+            } while (temp != p); // Loop until we reach the first node again
+    printf("\n");
 }
-void insertAtPos(int x,int pos)
-{
-    if(pos<1 || pos>sz)
-    {
-        printf("Invalid");
-        return ;
-    }
-    if(pos==1)
-    {
-        insertAtHead(x);
-        return ;
-    }
-    struct Node* newNode=(struct Node*)malloc(sizeof(struct Node));
-    newNode->data=x;
-    struct Node* temp=head;
-    struct Node* prev=NULL;
-    int i=1;
-    while(i<pos)
-    {
-        prev=temp;
-        temp=temp->next;
-        i++;
-    }
-    prev->next=newNode;
-    newNode->next=temp;
-    sz++;
+
+int Length(struct Node *p) {
+    int len = 0;
+    struct Node *temp = p;
+    do {
+        len++;
+        temp = temp->next;
+    } while (temp != p);
+    return len;
 }
-void deleteHead()
-{
-    if(head==NULL)
-    {
-        printf("Invalid");
-        return ;
+
+void Insert(struct Node *p, int index, int x) {
+    struct Node *t;
+    int i;
+    if (index < 1 || index > Length(p)) {
+        return;
     }
-    if(sz==1)
-    {
-        free(head);
-        head=NULL;
-        sz--;
-        return ;
+    if (index == 1) {
+        t = (struct Node *)malloc(sizeof(struct Node));
+        t->data = x;
+        t->prev = p->prev;
+        t->next = p;
+        p->prev->next = t;
+        p->prev = t;
+        if (p == first) {
+            first = t; // Update first if inserting at the beginning
+        }
+        return;
     }
-    struct Node*temp=head;
-    head->prev->next=head->next;
-    head->next->prev=head->prev;
-    head=head->next;
-    free(temp);
-    temp=NULL;
-    sz--;
-    return ;
+    for (i = 1; i < index; i++)
+        p = p->next;
+    t = (struct Node *)malloc(sizeof(struct Node));
+    t->data = x;
+    t->prev = p->prev;
+    t->next = p;
+    p->prev->next = t;
+    p->prev = t;
 }
-void deleteEnd()
-{
-    if(head==NULL)
-    {
-        printf("Invalid");
-        return ;
+
+int Delete(struct Node *p, int index) {
+    int x = -1, i;
+    if (index < 1 || index > Length(p)) {
+        printf("Invalid\n");
+        return x;
     }
-    if(sz==1)
-    {
-        free(head);
-        head=NULL;
-        sz--;
-        return ;
+    if (index == 1) {
+        p->prev->next = p->next;
+        p->next->prev = p->prev;
+        if (p == first) {
+            first = p->next; // Update first if deleting the first node
+        }
+        x = p->data;
+        free(p);
+        return x;
     }
-    struct Node* temp=head->prev;
-    temp->prev->next=head;
-    head->prev=temp->prev;
-    free(temp);
-    temp=NULL;
-    sz--;
+    for (i = 1; i < index; i++)
+        p = p->next;
+    p->prev->next = p->next;
+    p->next->prev = p->prev;
+    x = p->data;
+    free(p);
+    return x;
 }
-void deleteAtPos(int pos)
-{
-    if(pos<1 || pos>sz)
-    {
-        printf("Invalid");
-        return ;
-    }
-    if(pos==1)
-    {
-        deleteHead();
-        return ;
-    }
-    if(pos==sz)
-    {
-        deleteEnd();
-        return ;
-    }
-    struct Node *temp=head;
-    struct Node *prev=NULL;
-    int i=1;
-    while(i<pos)
-    {
-        prev=temp;
-        temp=temp->next;
-        i++;
-    }
-    prev->next=temp->next;
-    temp->next->prev=prev;
-    free(temp);
-    temp=NULL;
-    sz--;
-    return ;
+
+void Reverse(struct Node *p) {
+    struct Node *temp, *current = p;
+    do {
+        temp = current->next;
+        current->next = current->prev;
+        current->prev = temp;
+        current = current->prev;
+    } while (current != p);
 }
-void reverseList()
-{
-    if(head==NULL)
-    {
-        printf("Invalid");
-        return ;
-    }
-    struct Node* prevNode=head;
-    struct Node* tempNode=head;
-    struct Node* currNode=head->next;
-    prevNode->next=prevNode;
-    prevNode->prev=prevNode;
-    while(currNode!=head)
-    {
-        tempNode=currNode->next;
-        currNode->next=prevNode;
-        prevNode->prev=currNode;
-        head->next=currNode;
-        currNode->prev=head;
-        prevNode=currNode;
-        currNode=tempNode;
-    }
-    head=prevNode;
-}
-void print()
-{
-    if(head==NULL)
-    {
-        printf("Invalid");
-        return ;
-    }
-    struct Node* temp=head;
-    while(temp!=head->prev)
-    {
-        printf("%d ",temp->data);
-        temp=temp->next;
-    }
-    printf("%d\n",temp->data);
-}
-int main()
-{
-    insertAtHead(4);
-    insertAtHead(5);
-    insertAtHead(6);
-    insertAtHead(7);
-    print();
-    insertAtEnd(10);
-    insertAtEnd(11);
-    print();
-    insertAtPos(1,3);
-    insertAtPos(2,5);
-    print();
-    deleteHead();
-    print();
-    deleteEnd();
-    print();
-    deleteAtPos(3);
-    print();
-    reverseList();
-    print();
-    return 0;
+
+int main() {
+    int A[5] = {10, 12, 15, 42, 29};
+    
+    Create(A, 5);
+
+    printf("\nLength is :%d\n", Length(first));
+    
+    Display(first);
+
+    Insert(first, 2, 25);
+    
+    Display(first);
+
+    Insert(first, 6, 14);
+    
+    Display(first);
+
+    Delete(first, 1);
+    
+    Display(first);
+
+Delete(first, 6);
+   Display(first);
+
+   Delete(first, 2);
+   Display(first);
+
+   Reverse(first);
+   Display(first);
+
+   return 0;
+
 }

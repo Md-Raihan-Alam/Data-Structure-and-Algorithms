@@ -109,6 +109,19 @@ public:
     }
     return x;
         }
+        void Reverse()
+        {
+            Node<DT2> *temp,*node=first;
+            while(node!=NULL)
+            {
+                temp=node->next;
+                node->next=node->prev;
+                node->prev=temp;
+                node=node->prev;
+                if(node!=NULL && node->next==NULL)
+                    first=node;
+            }
+        }
 };
 int main()
 {
@@ -127,6 +140,8 @@ int main()
     DL.Delete(6);
     DL.Display();
     DL.Delete(2);
+    DL.Display();
+    DL.Reverse();
     DL.Display();
     return 0;
 }
