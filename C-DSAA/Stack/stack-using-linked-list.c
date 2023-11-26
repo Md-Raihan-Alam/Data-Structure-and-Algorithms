@@ -1,125 +1,87 @@
 #include<stdio.h>
 #include<stdlib.h>
-struct Node {
-    int data;
-    struct Node *next;
-};
-struct Node* top=NULL;
-int isEmpty(struct Node* top)
+struct Node
 {
+    char data;
+    struct Node *next;
+}*top=NULL;
+void Push(char x)
+{
+    struct Node *t;
+    t=(struct Node*)malloc(sizeof(struct Node));
+    if(t==NULL){
+        printf("Stack is full\n");
+        return ;
+    }
+    t->data=x;
+    t->next=top;
+    top=t;
+}
+char Pop()
+{
+    struct Node *t;
+    char x;
     if(top==NULL)
     {
-        return 1;
+        printf("Stack is empty\n");
+        return -1;
     }
-    return 0;
-}
-int isFull(struct Node* top)
-{
-    struct Node* p=(struct Node*)malloc(sizeof(struct Node));
-    if(p==NULL)
-    {
-        return 1;
-    }
-    return 0;
-}
-struct Node* push(struct Node *top,int x)
-{
-    if(isFull(top))
-    {
-        printf("Stack is full\n");
-        
-    }else{
-        struct Node* n=(struct Node*)malloc(sizeof(struct Node));
-        n->data=x;
-        n->next=top;
-        top=n;
-        return top;
-    }
-}
-int pop(struct Node *tp)
-{
-    if(isEmpty(tp))
-    {
-        printf("empty");
-        return 0;
-    }
-    struct Node* n=tp;
-    top=tp->next;
-    int x=n->data;
-    free(n);
+    t=top;
+    top=top->next;
+    x=t->data;
+    free(t);
     return x;
 }
-int peek(int pos)
+char Top()
 {
-    struct Node *ptr=top;
-    for(int i=0;(i<pos-1 && ptr!=NULL);i++)
+    if (top == NULL)
     {
-        ptr=ptr->next;
+        printf("Stack is empty\n");
+        return -1; 
     }
-    if(ptr!=NULL)
-    {
-        return ptr->data;
-    }
-    return -1;
+
+    return top->data;
 }
-void bottom()
+void Display()
 {
-    if(top==NULL)
+    struct Node *p;
+    p=top;
+    while(p!=NULL)
     {
-        return ;
+        printf("%c ",p->data);
+        p=p->next;
     }
-    struct Node* ptr=top;
-    while(ptr->next!=NULL)
-    {
-        ptr=ptr->next;
-    }
-            printf("%d ",ptr->data);
     printf("\n");
 }
-void stackTop()
+char PeekAtIndex(int index)
 {
-    if(top==NULL)
+    struct Node *p = top;
+    int count = 1;
+
+    while (p != NULL && count < index)
     {
-        return ;
+        p = p->next;
+        count++;
     }
-    printf("%d \n",top->data);
-}
-//double pointer - dereferencing
-// int pop(struct Node **top)
-// {
-//     if(isEmpty(*top))
-//     {
-//         printf("empty");
-//         return 0;
-//     }
-//     struct Node* n=*top;
-//     *top=*top->next;
-//     int x=n->data;
-//     free(n);
-//     return x;
-// }
-void print(struct Node *s)
-{
-    while(s!=NULL)
+
+    if (p == NULL || index<=0)
     {
-        printf("%d ",s->data);
-        s=s->next;
-    }
-    printf("\n");
+        printf("Index %d is out of bounds.\n", index);
+    }else
+        return p->data;
 }
 int main()
 {
-    top=push(top,78);
-    top=push(top,10);
-    top=push(top,98);
-    top=push(top,100);
-    print(top);
-    // int ele=pop(&top);//double pointer - derefence
-    int ele=pop(top);
-    printf("pop: %d\n",ele);
-    print(top);
-    printf("peek at 2 :%d \n",peek(2));
-    stackTop();
-    bottom();
+    Push('a');
+    Push('b');
+    Push('c');
+    Display();
+    printf("%c \n",Pop());
+    Display();
+    Push('d');
+    Push('e');
+    Push('f');
+    printf("%c\n",PeekAtIndex(5));
+    printf("%c\n",Top());
     return 0;
 }

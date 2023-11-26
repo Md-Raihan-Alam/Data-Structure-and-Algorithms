@@ -82,15 +82,15 @@ template <class DT2> class CircularLinkedList{
             node->next=node2->next;
             node2->next=node;
         }
-        int Delete(int index)
+        DT2 Delete(int index)
         {
             int x;
             if(index<=0 || index>Length())
             {
                 cout<<"Invalid"<<endl;
-                return -1;
-            }
-            if(index==1)
+
+            }else{
+if(index==1)
             {
                 Node<DT2> *node=head;
                 while(node->next!=head)
@@ -119,6 +119,8 @@ template <class DT2> class CircularLinkedList{
             x=node2->data;
             delete node2;
             return x;
+            }
+            
         }
 };
 int main()
