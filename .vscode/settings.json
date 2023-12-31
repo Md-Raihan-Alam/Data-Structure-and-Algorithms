@@ -1,7 +1,10 @@
 {
-    "files.associations": {
-        "ostream": "cpp",
-        "new": "cpp",
-        "vector": "c"
-    }
+  "files.associations": {
+    "ostream": "cpp",
+    "new": "cpp",
+    "vector": "c",
+    "stdlib.h": "c",
+    "queue.h": "c",
+    "xlocale": "c"
+  }
 }
